@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600&display=swap');
+
+/* 🌌 BASE BACKGROUND (lighter purple) */
+body {
+  margin: 0;
+  height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+
+  background: linear-gradient(
+    135deg,
+    #120022 0%,
+    #1a0033 45%,
+    #2a0a4a 100%
+  );
+
+  min-height: 100vh;
+}
+
+h1, h2, h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  text-shadow: 0 0 10px rgba(120, 200, 255, 0.15);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  font-size: 1.6rem;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 1.2rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+/* 🫧 BLOB BASE STYLE */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(35px);
+  opacity: 0.6;
+  z-index: 0;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+/* 🔵 BLUE BLOB */
+.b1 {
+  width: 190px;
+  height: 190px;
+  background: rgba(190, 140, 255, 0.35);
+  top: 20%;
+  left: 15%;
+  animation: float1 12s ease-in-out infinite;
+}
+
+/* 🟣 PURPLE BLOB */
+.b2 {
+  width: 200px;
+  height: 200px;
+  background: rgba(190, 140, 255, 0.35);
+  top: 70%;
+  left: 55%;
+  animation: float2 16s ease-in-out infinite;
+}
+
+/* 🟣 SMALLER PURPLE */
+.b3 {
+  width: 200px;
+  height: 200px;
+  background: rgba(120, 200, 255, 0.35);
+  top: 70%;
+  left: 10%;
+  animation: float3 14s ease-in-out infinite;
+}
+
+/* 🔵 EXTRA BLUE BLOB */
+.b4 {
+  width: 220px;
+  height: 220px;
+  background: rgba(120, 200, 255, 0.35);
+  top: 30%;
+  left: 70%;
+  animation: float4 15s ease-in-out infinite;
+}
+
+/* 🌊 ANIMATIONS (smooth, natural, not merging) */
+@keyframes float1 {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(60px, -50px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float2 {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(-80px, 70px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float3 {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(50px, 80px); }
+  100% { transform: translate(0, 0); }
+}
+
+@keyframes float4 {
+  0%   { transform: translate(0, 0); }
+  50%  { transform: translate(70px, -60px); }
+  100% { transform: translate(0, 0); }
+}
+
+/* 🧱 KEEP CONTENT ABOVE BLOBS */
+.container,
+.navbar,
+.card,
+.hero,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* NAVBAR CONTAINER */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 20px;
+  background: rgba(20, 10, 40, 0.6);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* NAV LINKS WRAPPER */
+.navbar div {
+  display: flex;
+  gap: 25px;
+}
+
+/* LINKS STYLE */
+.navbar a {
+  text-decoration: none; /* removes underline */
+  color: #ffffff;
+  font-weight: 500;
+  letter-spacing: 1px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* HOVER EFFECT */
+.navbar a:hover {
+  color: #b388ff;
+  transform: translateY(-2px);
+}
+
+/* COOL UNDERLINE ANIMATION (OPTIONAL BUT NICE) */
+.navbar a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 2px;
+  background: linear-gradient(90deg, #7c4dff, #b388ff);
+  transition: width 0.3s ease;
+}
+
+.navbar a:hover::after {
+  width: 100%;
+}
+
+/* HOME */
+.container {
+  padding: 40px;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h1 {
+  font-family: 'Space Grotesk';
+  font-size: 40px;
+}
+
+.hero p {
+  opacity: 0.7;
+}
+
+/* MEMBER CARD */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* 🧱 CARD BASE */
+.card h3 {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.card {
+  text-align: center;
+  padding: 15px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 0.3s ease;
+}
+
+/* 🖼️ IMAGE */
+.card img {
+  width: 60%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 12px;
+  display: block;
+  margin: 0 auto 10px;
+
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ✨ HOVER EFFECT */
+.card:hover {
+  transform: translateY(-8px);   /* lift */
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* 🔍 IMAGE ZOOM + GLOW */
+.card:hover img {
+  transform: scale(1.08);
+  box-shadow:
+    0 0 15px rgba(120, 200, 255, 0.4),
+    0 0 25px rgba(190, 140, 255, 0.3);
+}
+
+/* MEMBER PAGE */
+.back {
+  cursor: pointer;
+  color: #b57cff;
+  margin-bottom: 20px;
+  display: inline-block;
+}
+
+.profile {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.profile img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+}
+
+.files {
+  margin-top: 20px;
+  display: grid;
+  gap: 10px;
+}
+
+.file {
+  background: rgba(255,255,255,0.05);
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 10px;
+  text-align: center;
+  font-size: 13px;
+  opacity: 0.6;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+.role {
+  font-size: 11px;
+  padding: 4px 8px;
+  display: inline-block;
+  background: rgba(181, 124, 255, 0.15);
+  border: 1px solid rgba(181, 124, 255, 0.3);
+  border-radius: 8px;
+  color: #d9c2ff;
+  margin-top: 8px;
+}
+
+.contact-card .email {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: #b388ff;
+  word-break: break-word;
+}
+
+.contact-card {
+  cursor: default;
+  transition: transform 0.2s ease;
+}
+
+.contact-card:hover {
+  transform: translateY(-5px);
+}
+
+/* ACCORDION STYLE */
+.accordion {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.accordion-item {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px 15px;
+  color: white;
+  transition: 0.3s;
+}
+
+.accordion-item summary {
+  cursor: pointer;
+  font-weight: 500;
+  list-style: none;
+}
+
+.accordion-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.accordion-item:hover {
+  transform: translateY(-2px);
+  border-color: #b388ff;
+}
+
+.accordion-content {
+  margin-top: 10px;
+  padding-left: 10px;
+  font-size: 0.9rem;
+}
