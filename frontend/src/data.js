@@ -2,7 +2,7 @@ export const members = [
   {
     name: "Jalene Santiago",
     role: "Whole Web App",
-    image: "/images/jalene.jpg",
+    image: "/images/jalene.png",
     email: "qj-santiago@tip.edu.ph",
   },
   {
@@ -14,7 +14,7 @@ export const members = [
   {
     name: "Jayvee Fetalino",
     role: "Ansible",
-    image: "/images/jayvee.jpg",
+    image: "/images/jayvee.png",
     email: "qjfetalino@tip.edu.ph",
   },
 ];

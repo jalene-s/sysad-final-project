@@ -353,3 +353,46 @@ h3 {
   padding-left: 10px;
   font-size: 0.9rem;
 }
+
+/* FILE CARD STYLE */
+.file-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.file-card:hover {
+  transform: translateX(5px);
+  border-color: #b388ff;
+  background: rgba(179, 136, 255, 0.08);
+}
+
+/* ICON */
+.file-icon {
+  font-size: 1.5rem;
+}
+
+/* TEXT */
+.file-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.file-name {
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.file-action {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
