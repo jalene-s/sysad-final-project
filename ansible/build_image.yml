@@ -1,0 +1,171 @@
+---
+# ============================================================
+# Playbook 1: build_image.yml
+# Purpose   : Install Docker on all VMs, copy project files,
+#             and build the sysad-portfolio Docker image.
+# ============================================================
+
+- name: Install Docker and build Docker image
+  hosts: all_vms
+  become: yes
+
+  vars:
+    image_name: sysad-portfolio
+    image_tag: latest
+    project_src: "{{ playbook_dir }}/../"          # root of your project
+    remote_project_dir: /opt/sysad-portfolio
+
+  tasks:
+    - name: Ensure python 3 is installed
+      apt:
+        name: python3
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+    
+    - name: Ensure pip is installed
+      apt:
+        name: python3-pip
+        state: present
+      when: ansible_os_family == "Debian"
+    
+    - name: Ensure python3 is installed 
+      yum:
+        name: python3
+        state: present
+      when: ansible_os_family == "RedHat"
+
+
+
+    # ── 1. Install Docker on CentOS/RHEL ──────────────────────
+    - name: Install required packages for Docker (CentOS)
+      ansible.builtin.yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: Add Docker CE repo (CentOS)
+      ansible.builtin.command: >
+        yum-config-manager --add-repo
+        https://download.docker.com/linux/centos/docker-ce.repo
+      args:
+        creates: /etc/yum.repos.d/docker-ce.repo
+      when: ansible_os_family == "RedHat"
+
+    - name: Install Docker CE (CentOS)
+      ansible.builtin.yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    # ── 2. Install Docker on Ubuntu ───────────────────────────
+    - name: Install prerequisites for Docker (Ubuntu)
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+          - gnupg
+          - lsb-release
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: Create Docker keyring directory (Ubuntu)
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+      when: ansible_os_family == "Debian"
+
+    - name: Add Docker GPG key (Ubuntu)
+      ansible.builtin.shell: |
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+          | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+      args:
+        creates: /etc/apt/keyrings/docker.gpg
+      when: ansible_os_family == "Debian"
+
+    - name: Add Docker apt repository (Ubuntu)
+      ansible.builtin.shell: |
+        echo \
+          "deb [arch=$(dpkg --print-architecture) \
+          signed-by=/etc/apt/keyrings/docker.gpg] \
+          https://download.docker.com/linux/ubuntu \
+          $(lsb_release -cs) stable" \
+          | tee /etc/apt/sources.list.d/docker.list > /dev/null
+      args:
+        creates: /etc/apt/sources.list.d/docker.list
+      when: ansible_os_family == "Debian"
+
+    - name: Install Docker CE (Ubuntu)
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    # ── 3. Start & enable Docker service ──────────────────────
+    - name: Start and enable Docker service
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    # ── 4. Install Python Docker SDK correctly ─────────────────
+    # NOTE: We use --break-system-packages for Debian/Ubuntu 22.04+
+    # because the OS ships an externally-managed Python environment.
+    # On CentOS we use the system pip normally.
+    - name: Install Python Docker SDK (Ubuntu / Debian)
+      ansible.builtin.pip:
+        name: docker
+        executable: pip3
+        extra_args: "--break-system-packages"
+      when: ansible_os_family == "Debian"
+
+    - name: Install Python Docker SDK (CentOS / RedHat)
+      ansible.builtin.pip:
+        name: docker
+        executable: pip3
+      when: ansible_os_family == "RedHat"
+
+    # ── 5. Copy project files to remote host ──────────────────
+    - name: Create project directory on remote
+      ansible.builtin.file:
+        path: "{{ remote_project_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copy project files to remote host
+      ansible.builtin.copy:
+        src: "{{ project_src }}"
+        dest: "{{ remote_project_dir }}"
+
+    # ── 6. Build Docker image ──────────────────────────────────
+    - name: Build Docker image from Dockerfile
+      community.docker.docker_image:
+        name: "{{ image_name }}"
+        tag: "{{ image_tag }}"
+        build:
+          path: "{{ remote_project_dir }}"
+          dockerfile: Dockerfile
+        source: build
+        state: present
+      register: build_result
+
+    - name: Show build result
+      ansible.builtin.debug:
+        msg: "Image {{ image_name }}:{{ image_tag }} built successfully on {{ inventory_hostname }}"
+      when: build_result is succeeded

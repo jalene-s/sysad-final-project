@@ -1,0 +1,56 @@
+---
+# ============================================================
+# Playbook 2: run_containers.yml
+# Purpose   : Pull the built image and run it as a container
+#             on all VMs (1 CentOS + 2 Ubuntu).
+# ============================================================
+
+- name: Run sysad-portfolio Docker containers
+  hosts: all_vms
+  become: yes
+
+  vars:
+    image_name: sysad-portfolio
+    image_tag: latest
+    container_name: sysad-portfolio-app
+    host_port: 8080          # Port exposed on the VM
+    container_port: 80       # Port inside the container (Nginx)
+
+  tasks:
+
+    # ── 1. Make sure Docker is running ────────────────────────
+    - name: Ensure Docker service is running
+      ansible.builtin.service:
+        name: docker
+        state: started
+        enabled: yes
+
+    # ── 2. Remove old container if it exists ──────────────────
+    - name: Stop and remove existing container (if any)
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        state: absent
+        force_kill: yes
+
+    # ── 3. Run the container ───────────────────────────────────
+    - name: Run sysad-portfolio container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ image_name }}:{{ image_tag }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ host_port }}:{{ container_port }}"
+        detach: yes
+
+    # ── 4. Verify container is running ────────────────────────
+    - name: Check container is running
+      community.docker.docker_container_info:
+        name: "{{ container_name }}"
+      register: container_info
+
+    - name: Print container status
+      ansible.builtin.debug:
+        msg: >
+          Container '{{ container_name }}' is {{ container_info.container.State.Status }}
+          on {{ inventory_hostname }} — accessible at http://{{ ansible_host }}:{{ host_port }}
