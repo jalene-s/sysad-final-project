@@ -1,25 +1,28 @@
-FROM node:20-alpine AS builder
+# ─────────────────────────────────────────────
+# Dockerfile: Multi-stage build (React → nginx)
+# Stage 1: Build React app
+# Stage 2: Serve with nginx
+# ─────────────────────────────────────────────
+
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 COPY frontend/package.json frontend/package-lock.json ./
+RUN npm ci --silent
 
-RUN npm ci
-
-COPY frontend/ ./
-
+COPY frontend/ .
 RUN npm run build
 
-# ─── Stage 2: Serve with Nginx ───────────────────────────────────────────────
-FROM nginx:stable-alpine
+FROM nginx:alpine
 
-# Remove default nginx static assets
+LABEL maintainer="Team 4"
+LABEL description="CPE HOA Portfolio - Jalene, Ruel, Jayvee"
+LABEL version="1.0"
+
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy built React app from builder stage
 COPY --from=builder /app/build /usr/share/nginx/html
-
-# Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80

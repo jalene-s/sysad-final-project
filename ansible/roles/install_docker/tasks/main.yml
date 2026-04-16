@@ -1,0 +1,115 @@
+---
+# ─────────────────────────────────────────────
+#  Role: install_docker
+#  Installs Docker CE on both Ubuntu and CentOS
+# ─────────────────────────────────────────────
+
+# ── Ubuntu / Debian ──────────────────────────
+- name: Install prerequisites (Ubuntu)
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+      - python3
+      - python3-pip
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Create Docker keyring directory (Ubuntu)
+  ansible.builtin.file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: '0755'
+  when: ansible_os_family == "Debian"
+
+- name: Add Docker GPG key (Ubuntu)
+  ansible.builtin.shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg \
+      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  args:
+    creates: /etc/apt/keyrings/docker.gpg
+  when: ansible_os_family == "Debian"
+
+- name: Add Docker apt repository (Ubuntu)
+  ansible.builtin.shell: |
+    echo \
+      "deb [arch=$(dpkg --print-architecture) \
+      signed-by=/etc/apt/keyrings/docker.gpg] \
+      https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" \
+      | tee /etc/apt/sources.list.d/docker.list > /dev/null
+  args:
+    creates: /etc/apt/sources.list.d/docker.list
+  when: ansible_os_family == "Debian"
+
+- name: Install Docker CE (Ubuntu)
+  ansible.builtin.apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+  when: ansible_os_family == "Debian"
+
+- name: Install Python Docker SDK (Ubuntu)
+  ansible.builtin.pip:
+    name: docker
+    executable: pip3
+    extra_args: "--break-system-packages"
+  when: ansible_os_family == "Debian"
+
+# ── CentOS / RedHat ──────────────────────────
+- name: Install required packages (CentOS)
+  ansible.builtin.yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - python3
+      - python3-pip
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Add Docker CE repo (CentOS)
+  ansible.builtin.command: >
+    yum-config-manager --add-repo
+    https://download.docker.com/linux/centos/docker-ce.repo
+  args:
+    creates: /etc/yum.repos.d/docker-ce.repo
+  when: ansible_os_family == "RedHat"
+
+- name: Install Docker CE (CentOS)
+  ansible.builtin.yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: present
+  when: ansible_os_family == "RedHat"
+
+- name: Install Python Docker SDK (CentOS)
+  ansible.builtin.pip:
+    name: docker
+    executable: pip3
+  when: ansible_os_family == "RedHat"
+
+# ── Both ─────────────────────────────────────
+- name: Start and enable Docker service
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add user to docker group
+  ansible.builtin.user:
+    name: zerojay
+    groups: docker
+    append: yes

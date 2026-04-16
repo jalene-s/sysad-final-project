@@ -1,0 +1,39 @@
+---
+# ─────────────────────────────────────────────
+#  Role: build_image
+#  Copies project files to remote and builds
+#  the Docker image from the Dockerfile
+# ─────────────────────────────────────────────
+
+- name: Remove old project directory on remote
+  ansible.builtin.file:
+    path: "{{ remote_project_dir }}"
+    state: absent
+
+- name: Create fresh project directory on remote
+  ansible.builtin.file:
+    path: "{{ remote_project_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Copy project files to remote host
+  ansible.builtin.copy:
+    src: "{{ project_src }}"
+    dest: "{{ remote_project_dir }}"
+    mode: preserve
+
+- name: Build Docker image from Dockerfile
+  community.docker.docker_image:
+    name: "{{ image_name }}"
+    tag: "{{ image_tag }}"
+    build:
+      path: "{{ remote_project_dir }}"
+      dockerfile: Dockerfile
+    source: build
+    state: present
+  register: build_result
+
+- name: Confirm image built successfully
+  ansible.builtin.debug:
+    msg: "Image {{ image_name }}:{{ image_tag }} built on {{ inventory_hostname }}"
+  when: build_result is succeeded

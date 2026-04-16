@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@300;400;600&display=swap');
 
-/* 🌌 BASE BACKGROUND (lighter purple) */
 body {
   margin: 0;
   height: 100vh;
@@ -42,7 +41,6 @@ h3 {
   opacity: 0.9;
 }
 
-/* 🫧 BLOB BASE STYLE */
 .blob {
   position: fixed;
   border-radius: 50%;
@@ -53,7 +51,6 @@ h3 {
   mix-blend-mode: screen;
 }
 
-/* 🔵 BLUE BLOB */
 .b1 {
   width: 190px;
   height: 190px;
@@ -63,7 +60,6 @@ h3 {
   animation: float1 12s ease-in-out infinite;
 }
 
-/* 🟣 PURPLE BLOB */
 .b2 {
   width: 200px;
   height: 200px;
@@ -73,7 +69,6 @@ h3 {
   animation: float2 16s ease-in-out infinite;
 }
 
-/* 🟣 SMALLER PURPLE */
 .b3 {
   width: 200px;
   height: 200px;
@@ -83,7 +78,6 @@ h3 {
   animation: float3 14s ease-in-out infinite;
 }
 
-/* 🔵 EXTRA BLUE BLOB */
 .b4 {
   width: 220px;
   height: 220px;
@@ -93,7 +87,6 @@ h3 {
   animation: float4 15s ease-in-out infinite;
 }
 
-/* 🌊 ANIMATIONS (smooth, natural, not merging) */
 @keyframes float1 {
   0%   { transform: translate(0, 0); }
   50%  { transform: translate(60px, -50px); }
@@ -118,7 +111,6 @@ h3 {
   100% { transform: translate(0, 0); }
 }
 
-/* 🧱 KEEP CONTENT ABOVE BLOBS */
 .container,
 .navbar,
 .card,
@@ -128,7 +120,6 @@ h3 {
   z-index: 1;
 }
 
-/* NAVBAR CONTAINER */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -139,15 +130,13 @@ h3 {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* NAV LINKS WRAPPER */
 .navbar div {
   display: flex;
   gap: 25px;
 }
 
-/* LINKS STYLE */
 .navbar a {
-  text-decoration: none; /* removes underline */
+  text-decoration: none;
   color: #ffffff;
   font-weight: 500;
   letter-spacing: 1px;
@@ -155,13 +144,11 @@ h3 {
   transition: all 0.3s ease;
 }
 
-/* HOVER EFFECT */
 .navbar a:hover {
   color: #b388ff;
   transform: translateY(-2px);
 }
 
-/* COOL UNDERLINE ANIMATION (OPTIONAL BUT NICE) */
 .navbar a::after {
   content: "";
   position: absolute;
@@ -177,7 +164,6 @@ h3 {
   width: 100%;
 }
 
-/* HOME */
 .container {
   padding: 40px;
 }
@@ -196,14 +182,12 @@ h3 {
   opacity: 0.7;
 }
 
-/* MEMBER CARD */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
-/* 🧱 CARD BASE */
 .card h3 {
   font-size: 1rem;
   font-weight: 500;
@@ -217,7 +201,6 @@ h3 {
   transition: all 0.3s ease;
 }
 
-/* 🖼️ IMAGE */
 .card img {
   width: 60%;
   aspect-ratio: 1 / 1;
@@ -229,13 +212,11 @@ h3 {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ✨ HOVER EFFECT */
 .card:hover {
   transform: translateY(-8px);   /* lift */
   box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
 
-/* 🔍 IMAGE ZOOM + GLOW */
 .card:hover img {
   transform: scale(1.08);
   box-shadow:
@@ -243,7 +224,6 @@ h3 {
     0 0 25px rgba(190, 140, 255, 0.3);
 }
 
-/* MEMBER PAGE */
 .back {
   cursor: pointer;
   color: #b57cff;
@@ -316,7 +296,6 @@ h3 {
   transform: translateY(-5px);
 }
 
-/* ACCORDION STYLE */
 .accordion {
   margin-top: 20px;
   display: flex;
@@ -356,7 +335,7 @@ h3 {
 
   max-height: 300px;
   overflow-y: auto;
-  overflow-x: hidden;   /* 🚀 THIS FIXES HORIZONTAL SCROLL */
+  overflow-x: hidden;  
 }
 
 .accordion-content::-webkit-scrollbar {
@@ -376,7 +355,6 @@ h3 {
   background: rgba(179, 136, 255, 0.9);
 }
 
-/* FILE CARD STYLE */
 .file-card {
   display: flex;
   align-items: center;
@@ -399,12 +377,10 @@ h3 {
   background: rgba(179, 136, 255, 0.08);
 }
 
-/* ICON */
 .file-icon {
   font-size: 1.5rem;
 }
 
-/* TEXT */
 .file-info {
   display: flex;
   flex-direction: column;

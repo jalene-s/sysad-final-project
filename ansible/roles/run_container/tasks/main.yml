@@ -1,0 +1,39 @@
+---
+# ─────────────────────────────────────────────
+#  Role: run_container
+#  Stops any old container and starts a fresh
+#  one from the built portfolio image
+# ─────────────────────────────────────────────
+
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Stop and remove existing container (if any)
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: absent
+    force_kill: yes
+
+- name: Run sysad-portfolio container
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    image: "{{ image_name }}:{{ image_tag }}"
+    state: started
+    restart_policy: always
+    ports:
+      - "{{ host_port }}:{{ container_port }}"
+    detach: yes
+
+- name: Verify container is running
+  community.docker.docker_container_info:
+    name: "{{ container_name }}"
+  register: container_info
+
+- name: Print container status
+  ansible.builtin.debug:
+    msg: >
+      Container '{{ container_name }}' is {{ container_info.container.State.Status }}
+      on {{ inventory_hostname }} — visit http://{{ ansible_host }}:{{ host_port }}

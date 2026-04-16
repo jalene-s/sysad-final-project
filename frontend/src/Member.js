@@ -89,6 +89,8 @@ const memberFiles = {
     },
     {
       title: "Reflection",
+      isReflection: true,
+      text: "This project focuses on developing and deploying a web application using tools like Docker and Ansible. It helped us better understand how web applications are built and deployed in real-world scenarios. At first, the process was confusing, especially with concepts like containerization and automation, but as we followed each step, we saw how everything connects to create a more efficient system. One of the main challenges we encountered was running everything in VirtualBox, which often caused laptops to crash, lag, and take a long time to complete tasks, making the process more difficult. Despite this, Docker made it easier to manage dependencies by packaging the application into a single image, while Ansible simplified deployment through automation, reducing errors and saving time. We also learned the importance of proper planning and decision-making, such as choosing the right setup for deployment, as well as the value of group collaboration in completing complex tasks. Through deploying this project, we were also able to better understand all the lessons from prelim up until finals, as we applied them in a practical and hands-on way. Even with challenges and errors along the way, we improved our problem-solving skills and became more confident in handling technical tasks.",
       items: [],
     },
   ],
@@ -153,12 +155,14 @@ const memberFiles = {
         },
         {
           name: "Final Skills Exam",
-          link: "https://github.com/YOUR-LINK-2",
+          link: "",
         },
       ],
     },
     {
       title: "Reflection",
+      isReflection: true,
+      text: "Working on this project helped me understand how Ansible playbooks can automate deployment tasks instead of doing everything manually, which saved time and reduced errors. Even though I did not create the front-end myself, I gained a better understanding of how the HTML file works as the interface that users see after deployment. I also learned how Docker helps package the web application so it can run properly on both Ubuntu and CentOS systems. Overall, this project helped me appreciate how automation tools and containerization make deploying applications easier and more organized across multiple machines.",
       items: [],
     },
   ],
@@ -215,12 +219,14 @@ const memberFiles = {
         },
         {
           name: "Final Skills Exam",
-          link: "https://github.com/YOUR-LINK-2",
+          link: "",
         },
       ],
     },
     {
       title: "Reflection",
+      isReflection: true,
+      text: "Throughout this course, my journey in System Administration has been both challenging and rewarding. My main contribution to our final project was writing the Ansible playbooks, specifically the playbook for building the Docker image and the playbook for running the Docker containers across our three virtual machines. The hardest part of the entire journey was during the prelim, when we were still setting up our virtual machines for the first time. Getting the VMs to communicate with each other, configuring SSH properly, and understanding how Ansible connects to remote hosts was confusing at first. There were a lot of moving parts and it was easy to make mistakes. However, once we got past that stage, everything started to click and the rest of the course went much more smoothly. For the final project specifically, writing the Ansible playbooks came with its own set of errors. One of the first issues we encountered was the Python Docker SDK failing to install on Ubuntu, throwing an externally managed environment error. This was caused by Ubuntu 22.04's new restriction on system-wide pip installations, which we fixed by adding the --break-system-packages flag specifically for Debian-based systems. We also ran into SSH connection errors because the private key path was set to id_rsa when our actual key was id_ed25519, which we corrected in the inventory file. Another issue was that the Ansible copy module was not overwriting old files on the VMs, so the outdated Dockerfile kept being used and we fixed this by adding a task to delete the remote directory before copying fresh files. On top of that, the package.json had react-scripts set to an invalid version causing npm to install only 34 packages instead of the full dependencies, which we corrected to the proper version. Despite all these errors, each one taught me something new about how Linux systems, Python environments, SSH authentication, and Docker all interact with each other. What started as frustrating roadblocks became valuable lessons that I now understand deeply. This course showed me that system administration is not just about running commands — it is about understanding why things fail and knowing how to fix them methodically.",
       items: [],
     },
   ],
@@ -244,48 +250,48 @@ export default function Member() {
             <summary>{section.title}</summary>
 
             <div className="accordion-content">
-              {section.items.length > 0 ? (
+              {section.isReflection ? (
+                <p style={{ lineHeight: "1.8", opacity: 0.85, fontSize: "0.88rem" }}>
+                  {section.text}
+                </p>
+              ) : section.items.length > 0 ? (
                 section.items.map((file, j) => (
                   <div
                     key={j}
                     className="file-card"
-                    onClick={() => setSelectedFile(file.link)}
+                    onClick={() => file.link && setSelectedFile(file.link)}
+                    style={{ opacity: file.link ? 1 : 0.4, cursor: file.link ? "pointer" : "default" }}
                   >
                     <div className="file-icon">📄</div>
                     <div className="file-info">
                       <span className="file-name">{file.name}</span>
-                      <span className="file-action">Open File</span>
+                      <span className="file-action">{file.link ? "Open File" : "Coming soon"}</span>
                     </div>
                   </div>
                 ))
               ) : (
-                <p style={{ opacity: 0.6 }}>
-                  No files uploaded yet.
-                </p>
+                <p style={{ opacity: 0.6 }}>No files uploaded yet.</p>
               )}
             </div>
           </details>
         ))}
       </div>
 
-      {/* ✅ PDF VIEWER INSIDE RETURN */}
       {selectedFile && (
         <div className="pdf-modal">
           <div className="pdf-box">
             <div className="pdf-header">
               <button onClick={() => setSelectedFile(null)}>Close</button>
             </div>
-
             <iframe
               src={selectedFile}
               title="PDF Viewer"
               width="100%"
               height="600px"
             />
-      
-          </div> {/* ✅ CLOSE pdf-box */}
+          </div>
         </div>
-      )} {/* ✅ CLOSE PDF MODAL */}
+      )}
     </div>
   );
 }
